@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Thiên Đường Sách - Hệ thống quản lý nhân viên">
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
+<title>Nhân viên - Thiên Đường Sách</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--pri:#3b82f6;--pri-d:#1d4ed8;--pri-l:#dbeafe;--bg:#f8fafc;--surface:#fff;--border:#e2e8f0;--text:#1e293b;--text-l:#64748b;--green:#10b981;--red:#ef4444;--amber:#f59e0b;--r:.75rem;--shadow:0 4px 6px -1px rgba(0,0,0,.1)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh}
+.sidebar{width:260px;background:var(--surface);border-right:1px solid var(--border);padding:1.5rem 1rem;display:flex;flex-direction:column;position:fixed;height:100vh;z-index:100}
+.sidebar-logo{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:var(--pri);margin-bottom:2rem;display:flex;align-items:center;gap:.5rem;text-decoration:none}
+.nav-sec{font-size:.7rem;text-transform:uppercase;color:var(--text-l);letter-spacing:.1em;padding:.75rem .5rem .25rem;margin-top:.75rem;font-weight:700}
+.nav-item{display:flex;align-items:center;gap:.6rem;padding:.7rem .75rem;border-radius:var(--r);cursor:pointer;color:var(--text-l);transition:.2s;text-decoration:none;font-size:.9rem;font-weight:500}
+.nav-item:hover,.nav-item.active{background:var(--pri-l);color:var(--pri-d)}
+.nav-item.active{font-weight:700;box-shadow:inset 4px 0 0 var(--pri)}
+.nav-item svg{width:1.15rem;height:1.15rem;flex-shrink:0}
+.main{margin-left:260px;flex:1;padding:2rem;max-width:1400px}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem}
+.topbar h1{font-family:'Playfair Display',serif;font-size:1.75rem}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:2rem}
+.stat-card{background:var(--surface);border-radius:var(--r);padding:1.25rem;box-shadow:var(--shadow);border:1px solid var(--border)}
+.stat-value{font-size:1.5rem;font-weight:700}
+.stat-label{color:var(--text-l);font-size:.8rem;font-weight:500}
+.card{background:var(--surface);border-radius:var(--r);box-shadow:var(--shadow);border:1px solid var(--border);overflow:hidden;margin-bottom:1.5rem}
+.card-header{padding:1.25rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.card-header span{font-weight:700;font-size:1rem}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;padding:.75rem 1rem;background:#f8fafc;color:var(--text-l);font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;font-weight:700}
+td{padding:.75rem 1rem;border-bottom:1px solid var(--border);font-size:.85rem}
+tr:hover td{background:#f8fafc}
+.btn{padding:.5rem 1rem;border-radius:.5rem;border:none;cursor:pointer;font-weight:600;font-size:.8rem;transition:.2s;display:inline-flex;align-items:center;gap:.4rem}
+.btn-pri{background:var(--pri);color:#fff}
+.btn-pri:hover{background:var(--pri-d);transform:translateY(-1px)}
+.btn-out{background:#fff;border:1.5px solid var(--border);color:var(--text-l)}
+.btn-out:hover{border-color:var(--pri);color:var(--pri)}
+.btn-danger{background:#fef2f2;color:var(--red);border:1px solid #fee2e2}
+.btn-sm{padding:.35rem .6rem;font-size:.75rem}
+.badge{padding:.2rem .6rem;border-radius:2rem;font-size:.7rem;font-weight:700}
+.badge-wait{background:#fffbeb;color:#92400e}
+.badge-ship{background:#eff6ff;color:#1e40af}
+.badge-done{background:#ecfdf5;color:#065f46}
+.badge-cancel{background:#fef2f2;color:#991b1b}
+.modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);display:none;justify-content:center;align-items:center;z-index:1000;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.modal.show{display:flex}
+.modal-content{background:var(--surface);border-radius:1rem;width:90%;max-width:700px;max-height:90vh;overflow-y:auto;padding:2rem;box-shadow:0 25px 50px -12px rgba(0,0,0,.25)}
+.modal-title{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;margin-bottom:1.5rem}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.form-group{margin-bottom:1rem}
+.form-group.full{grid-column:span 2}
+.form-group label{display:block;font-size:.8rem;font-weight:600;margin-bottom:.3rem}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:.6rem .8rem;border-radius:.4rem;border:1.5px solid var(--border);font-family:inherit;font-size:.85rem}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--pri)}
+.upload-zone{border:2px dashed var(--border);border-radius:var(--r);padding:2rem;text-align:center;cursor:pointer;transition:.2s;background:#fafbfc}
+.upload-zone:hover{border-color:var(--pri);background:var(--pri-l)}
+.upload-zone img{max-width:120px;max-height:160px;border-radius:.5rem;margin-top:.5rem}
+.tab-content>div{display:none}
+.tab-content>div.active{display:block;animation:fadeIn .3s}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.sub-tabs{display:flex;gap:.5rem;margin-bottom:1.5rem}
+.sub-tab{padding:.5rem 1rem;border-radius:2rem;cursor:pointer;font-size:.8rem;font-weight:600;color:var(--text-l);background:var(--bg);border:1px solid var(--border);transition:.2s}
+.sub-tab.active{background:var(--pri);color:#fff;border-color:var(--pri)}
+.product-img{width:45px;height:60px;object-fit:cover;border-radius:.4rem}
+.import-items{margin:1rem 0}
+.import-item{display:flex;gap:.5rem;align-items:center;margin-bottom:.5rem;padding:.5rem;background:#f8fafc;border-radius:.4rem}
+.import-item select,.import-item input{padding:.4rem .5rem;border:1px solid var(--border);border-radius:.3rem;font-size:.8rem}
+.import-item select{flex:2}
+.import-item input{width:80px}
+#toast-box{position:fixed;bottom:2rem;right:2rem;z-index:2000}
+.toast{background:#fff;padding:.75rem 1.25rem;border-radius:.6rem;box-shadow:var(--shadow);border-left:4px solid var(--pri);margin-top:.5rem;animation:slideIn .3s}
+@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+
+/* Responsive Sidebar */
+.menu-toggle { display: none; background: none; border: none; cursor: pointer; color: var(--text); padding: 0.5rem; }
+@media (max-width: 768px) {
+    .sidebar { width: 60px; padding: 1rem 0.5rem; align-items: center; }
+    .sidebar-logo span, .nav-sec, .nav-item span { display: none; }
+    .nav-item { padding: 0.75rem; justify-content: center; }
+    .main { margin-left: 60px; padding: 1rem; }
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+    .menu-toggle { display: block; }
+}
+@media (max-width: 480px) {
+    .stats-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<aside class="sidebar">
+<a href="/" class="sidebar-logo">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+<span>TDS Staff</span>
+</a>
+<div class="nav-sec">Công việc</div>
+<a class="nav-item active" onclick="showTab('overview')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg><span>Tổng quan</span></a>
+<a class="nav-item" onclick="showTab('books')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><span>Quản lý sách</span></a>
+<a class="nav-item" onclick="showTab('orders')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg><span>Xử lý đơn hàng</span></a>
+<a class="nav-item" onclick="showTab('import')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg><span>Nhập kho</span></a>
+<a class="nav-item" onclick="showTab('manage')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span>Danh mục</span></a>
+<div style="margin-top:auto;border-top:1px solid var(--border);padding-top:1rem">
+<a class="nav-item" href="/" style="color:var(--pri)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg><span>Về cửa hàng</span></a>
+<a class="nav-item" onclick="logout()" style="color:var(--red)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg><span>Đăng xuất</span></a>
+</div>
+</aside>
+<main class="main">
+<div class="tab-content" id="tabContent">
+<!-- TAB: Tổng quan -->
+<div id="tab-overview" class="active">
+<div class="topbar">
+    <div style="display:flex; align-items:center; gap:1rem;">
+        <button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('expanded')">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <h1>Tổng quan</h1>
+    </div>
+    <span id="staffGreeting" style="font-weight:600"></span>
+</div>
+<div class="stats-grid" id="overviewStats"></div>
+<div class="card"><div class="card-header"><span>Đơn hàng cần xử lý</span></div><div style="overflow-x:auto"><table><thead><tr><th>Mã đơn</th><th>Khách</th><th>Ngày</th><th>Tổng tiền</th><th>Thao tác</th></tr></thead><tbody id="pendingOrdersBody"></tbody></table></div></div>
+</div>
+<!-- TAB: Quản lý sách -->
+<div id="tab-books">
+<div class="topbar"><h1>Quản lý sách</h1><div style="display:flex;gap:.5rem"><input type="text" placeholder="Tìm kiếm..." oninput="filterStaffBooks(this.value)" style="padding:.5rem .75rem;border:1.5px solid var(--border);border-radius:.5rem;font-size:.85rem;width:220px"><button class="btn btn-pri" onclick="openBookModal()">+ Thêm sách</button></div></div>
+<div class="card"><div style="overflow-x:auto"><table><thead><tr><th>Sách</th><th>Tác giả</th><th>Giá bán</th><th>Tồn kho</th><th>Thể loại</th><th>Thao tác</th></tr></thead><tbody id="staffBooksBody"></tbody></table></div></div>
+</div>
+<!-- TAB: Đơn hàng -->
+<div id="tab-orders">
+<div class="topbar"><h1>Xử lý đơn hàng</h1><select onchange="filterStaffOrders(this.value)" style="padding:.5rem;border:1.5px solid var(--border);border-radius:.5rem;font-size:.85rem"><option value="">Tất cả</option><option value="Chờ xử lý">Chờ xử lý</option><option value="Đang giao">Đang giao</option><option value="Đã giao">Đã giao</option><option value="Đã hủy">Đã hủy</option></select></div>
+<div class="card"><div style="overflow-x:auto"><table><thead><tr><th>Mã đơn</th><th>Khách hàng</th><th>Ngày đặt</th><th>Tổng tiền</th><th>Trạng thái</th><th>Thao tác</th></tr></thead><tbody id="staffOrdersBody"></tbody></table></div></div>
+</div>
+<!-- TAB: Nhập kho -->
+<div id="tab-import">
+<div class="topbar"><h1>Nhập kho</h1><button class="btn btn-pri" onclick="openImportModal()">+ Tạo phiếu nhập</button></div>
+<div class="card"><div class="card-header"><span>Lịch sử nhập kho</span></div><div style="overflow-x:auto"><table><thead><tr><th>Mã phiếu</th><th>Ngày nhập</th><th>NCC</th><th>Số mặt hàng</th><th>Tổng tiền</th><th>Ghi chú</th></tr></thead><tbody id="importsBody"></tbody></table></div></div>
+</div>
+<!-- TAB: Danh mục -->
+<div id="tab-manage">
+<div class="topbar"><h1>Quản lý danh mục</h1></div>
+<div class="sub-tabs"><div class="sub-tab active" onclick="showSubTab('categories',this)">Thể loại</div><div class="sub-tab" onclick="showSubTab('authors',this)">Tác giả</div><div class="sub-tab" onclick="showSubTab('suppliers',this)">Nhà cung cấp</div></div>
+<div id="sub-categories" class="card"><div class="card-header"><span>Thể loại</span><button class="btn btn-pri btn-sm" onclick="openCatModal()">+ Thêm</button></div><div style="overflow-x:auto"><table><thead><tr><th>ID</th><th>Tên thể loại</th><th>Mô tả</th><th>Thao tác</th></tr></thead><tbody id="catBody"></tbody></table></div></div>
+<div id="sub-authors" class="card" style="display:none"><div class="card-header"><span>Tác giả</span><button class="btn btn-pri btn-sm" onclick="openAuthorModal()">+ Thêm</button></div><div style="overflow-x:auto"><table><thead><tr><th>ID</th><th>Tên tác giả</th><th>Tiểu sử</th><th>Số sách</th><th>Thao tác</th></tr></thead><tbody id="authorBody"></tbody></table></div></div>
+<div id="sub-suppliers" class="card" style="display:none"><div class="card-header"><span>Nhà cung cấp</span><button class="btn btn-pri btn-sm" onclick="openSupplierModal()">+ Thêm</button></div><div style="overflow-x:auto"><table><thead><tr><th>Mã NCC</th><th>Tên</th><th>Địa chỉ</th><th>SĐT</th><th>Email</th><th>Thao tác</th></tr></thead><tbody id="supplierBody"></tbody></table></div></div>
+</div>
+</div>
+</main>
+<!-- MODALS -->
+<div id="bookModal" class="modal"><div class="modal-content">
+<h2 class="modal-title" id="bookModalTitle">Thêm sách mới</h2>
+<form id="bookForm" onsubmit="handleBookSubmit(event)">
+<input type="hidden" id="editBookId">
+<div class="form-grid">
+<div class="form-group full"><label>Tên sách *</label><input type="text" id="bkTitle" required></div>
+<div class="form-group"><label>Giá bán (₫) *</label><input type="number" id="bkPrice" required></div>
+<div class="form-group"><label>Giá gốc (₫)</label><input type="number" id="bkOrigPrice"></div>
+<div class="form-group"><label>Tồn kho</label><input type="number" id="bkStock" value="0"></div>
+<div class="form-group"><label>Thể loại *</label><select id="bkCat" required></select></div>
+<div class="form-group"><label>Tác giả</label><select id="bkAuthor"></select></div>
+<div class="form-group"><label>Nhà cung cấp</label><select id="bkSupplier"></select></div>
+<div class="form-group"><label>ISBN</label><input type="text" id="bkISBN"></div>
+<div class="form-group"><label>Số trang</label><input type="number" id="bkPages"></div>
+<div class="form-group"><label>Ngôn ngữ</label><input type="text" id="bkLang" value="Tiếng Việt"></div>
+<div class="form-group"><label>Ngày xuất bản</label><input type="date" id="bkDate"></div>
+<div class="form-group">
+<label>Ảnh bìa</label>
+<div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
+<input type="file" id="fileInput" accept="image/*" style="display:none" onchange="handleFileUpload(this)">
+<p style="color:var(--text-l);font-size:.85rem">Click để chọn ảnh hoặc nhập URL bên dưới</p>
+<img id="previewImg" style="display:none">
+</div>
+<input type="text" id="bkCover" placeholder="Hoặc nhập đường dẫn ảnh..." style="margin-top:.5rem">
+</div>
+<div class="form-group full"><label>Mô tả</label><textarea id="bkDesc" rows="3"></textarea></div>
+</div>
+<div style="display:flex;gap:.75rem;justify-content:flex-end;margin-top:1rem">
+<button type="button" class="btn btn-out" onclick="closeModal('bookModal')">Hủy</button>
+<button type="submit" class="btn btn-pri">Lưu sách</button>
+</div>
+</form>
+</div></div>
+<div id="importModal" class="modal"><div class="modal-content">
+<h2 class="modal-title">Tạo phiếu nhập kho</h2>
+<form id="importForm" onsubmit="handleImportSubmit(event)">
+<div class="form-group"><label>Nhà cung cấp *</label><select id="impSupplier" required></select></div>
+<div class="form-group"><label>Sách nhập</label><button type="button" class="btn btn-out btn-sm" onclick="addImportItem()">+ Thêm sách</button></div>
+<div class="import-items" id="importItems"></div>
+<div style="font-weight:700;text-align:right;margin:.5rem 0">Tổng: <span id="importTotal">0₫</span></div>
+<div class="form-group"><label>Ghi chú</label><textarea id="impNote" rows="2"></textarea></div>
+<div style="display:flex;gap:.75rem;justify-content:flex-end;margin-top:1rem">
+<button type="button" class="btn btn-out" onclick="closeModal('importModal')">Hủy</button>
+<button type="submit" class="btn btn-pri">Lưu phiếu nhập</button>
+</div>
+</form>
+</div></div>
+<div id="simpleModal" class="modal"><div class="modal-content" style="max-width:450px">
+<h2 class="modal-title" id="simpleModalTitle"></h2>
+<form id="simpleForm" onsubmit="handleSimpleSubmit(event)">
+<input type="hidden" id="simpleEditId">
+<input type="hidden" id="simpleType">
+<div id="simpleFields"></div>
+<div style="display:flex;gap:.75rem;justify-content:flex-end;margin-top:1rem">
+<button type="button" class="btn btn-out" onclick="closeModal('simpleModal')">Hủy</button>
+<button type="submit" class="btn btn-pri">Lưu</button>
+</div>
+</form>
+</div></div>
+<div id="toast-box"></div>
+<script src="staff.js"></script>
+</body>
+</html>

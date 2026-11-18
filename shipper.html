@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giao hàng - Thiên Đường Sách</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #d4a574;
+            --primary-dark: #b8895a;
+            --amber: #f59e0b;
+            --bg: #f1f5f9;
+            --surface: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --radius: 1rem;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; }
+
+        .navbar {
+            background: var(--surface);
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 1.5rem auto;
+            padding: 0 1rem;
+        }
+
+        .welcome-card {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            padding: 2rem;
+            border-radius: var(--radius);
+            color: white;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-card::after {
+            content: '';
+            position: absolute;
+            top: -20%;
+            right: -10%;
+            width: 150px;
+            height: 150px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+
+        .welcome-card h1 { font-size: 1.75rem; margin-bottom: 0.5rem; position: relative; z-index: 1; }
+        .welcome-card p { opacity: 0.9; font-size: 0.95rem; position: relative; z-index: 1; }
+
+        .tabs {
+            display: flex;
+            background: #e2e8f0;
+            padding: 0.35rem;
+            border-radius: 0.75rem;
+            margin-bottom: 2rem;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 0.85rem;
+            text-align: center;
+            border-radius: 0.6rem;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--text-light);
+            transition: all 0.2s;
+        }
+
+        .tab.active {
+            background: var(--surface);
+            color: var(--primary);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+
+        .order-card {
+            background: var(--surface);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 1.25rem;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            transition: all 0.2s;
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.25rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1rem;
+        }
+
+        .order-id { font-weight: 800; color: var(--text); font-size: 1.1rem; }
+        .order-date { font-size: 0.8rem; color: var(--text-light); margin-top: 0.25rem; }
+
+        .status-badge {
+            padding: 0.35rem 0.85rem;
+            border-radius: 2rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .status-pending { background: #fffbeb; color: #b45309; }
+        .status-shipping { background: #eff6ff; color: #1d4ed8; }
+        .status-delivered { background: #ecfdf5; color: #047857; }
+
+        .info-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .info-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            background: #f8fafc;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            flex-shrink: 0;
+        }
+
+        .info-content strong { display: block; font-size: 0.95rem; color: var(--text); }
+        .info-content span { font-size: 0.9rem; color: var(--text-light); }
+
+        .order-details-list {
+            background: #f8fafc;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin: 1.25rem 0;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .detail-item:last-child { margin-bottom: 0; }
+
+        .note-box {
+            background: #fffbeb;
+            border-left: 4px solid var(--amber);
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.85rem;
+            margin-bottom: 1.25rem;
+            color: #92400e;
+        }
+
+        .order-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+        }
+
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(212, 165, 116, 0.3); }
+
+        .btn-outline { background: white; border: 2px solid var(--primary); color: var(--primary); }
+        .btn-outline:hover { background: #eff6ff; }
+
+        .empty-state { text-align: center; padding: 4rem 2rem; color: var(--text-light); }
+        .empty-state svg { width: 4rem; height: 4rem; margin-bottom: 1.5rem; opacity: 0.2; color: var(--primary); }
+
+        #toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1e293b;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 3rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            z-index: 1000;
+            display: none;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+            animation: fadeInUp 0.3s ease-out;
+        }
+
+        @keyframes fadeInUp { from { opacity: 0; transform: translate(-50%, 20px); } to { opacity: 1; transform: translate(-50%, 0); } }
+
+        .btn-logout { background: #fee2e2; color: var(--red); padding: 0.5rem 1rem; border-radius: 0.5rem; border: none; font-weight: 600; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="logo">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        <span>TDS Shipper</span>
+    </div>
+    <button class="btn-logout" onclick="logout()">Thoát</button>
+</nav>
+
+<div class="container">
+    <div class="welcome-card">
+        <p>Phiên làm việc của,</p>
+        <h1 id="shipperName">Shipper</h1>
+        <p id="shipperEmail">Đang kết nối...</p>
+    </div>
+
+    <div class="tabs">
+        <div class="tab active" onclick="switchTab('pending', event)">Chờ nhận</div>
+        <div class="tab" onclick="switchTab('shipping', event)">Đang giao</div>
+        <div class="tab" onclick="switchTab('history', event)">Lịch sử</div>
+    </div>
+
+    <div id="ordersList">
+        <div class="empty-state">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+            <p>Đang tải dữ liệu đơn hàng...</p>
+        </div>
+    </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+    const API = '';
+    const token = localStorage.getItem('authToken');
+    let currentTab = 'pending';
+    let allOrders = [];
+
+    // Auth Check
+    const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+    if (!user || (user.role !== 'SHIPPER' && user.role !== 'ADMIN')) {
+        window.location.href = '/login.html';
+    } else {
+        document.getElementById('shipperName').textContent = user.name || user.email;
+        document.getElementById('shipperEmail').textContent = user.email || '';
+    }
+
+    async function loadOrders() {
+        try {
+            // Sử dụng API shipper mới tạo
+            const res = await fetch(`${API}/api/shipper/orders`, {
+                headers: {'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json'}
+            });
+            const data = await res.json();
+            allOrders = data.orders || [];
+            renderOrders();
+        } catch (error) {
+            showToast('Lỗi kết nối máy chủ');
+        }
+    }
+
+    function switchTab(tab, evt) {
+        currentTab = tab;
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        if (evt && evt.target) evt.target.classList.add('active');
+        else document.querySelectorAll('.tab')[tab === 'pending' ? 0 : tab === 'shipping' ? 1 : 2].classList.add('active');
+        renderOrders();
+    }
+
+    function renderOrders() {
+        const listEl = document.getElementById('ordersList');
+        let filtered = [];
+
+        if (currentTab === 'pending') {
+            filtered = allOrders.filter(o => o.TrangThai === 'Chờ lấy hàng');
+        } else if (currentTab === 'shipping') {
+            filtered = allOrders.filter(o => o.TrangThai === 'Đang giao');
+        } else {
+            filtered = allOrders.filter(o => o.TrangThai === 'Đã giao' || o.TrangThai === 'Đã hủy');
+        }
+
+        if (filtered.length === 0) {
+            listEl.innerHTML = `
+                <div class="empty-state">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+                    <p>Không có đơn hàng nào trong mục này</p>
+                </div>`;
+            return;
+        }
+
+        listEl.innerHTML = filtered.map(order => `
+            <div class="order-card">
+                <div class="order-header">
+                    <div>
+                        <div class="order-id">#${order.MaDH}</div>
+                        <div class="order-date">${new Date(order.NgayDat).toLocaleString('vi-VN')}</div>
+                    </div>
+                    <span class="status-badge ${getStatusClass(order.TrangThai)}">${order.TrangThai}</span>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    </div>
+                    <div class="info-content">
+                        <strong>${order.TenKH || 'Khách hàng'}</strong>
+                        <span>${order.SDT || 'Chưa cập nhật SĐT'}</span>
+                    </div>
+                </div>
+
+                <div class="info-row">
+                    <div class="info-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    </div>
+                    <div class="info-content">
+                        <strong>Địa chỉ giao hàng</strong>
+                        <span>${order.DiaChiGiao || 'Nhận tại cửa hàng'}</span>
+                    </div>
+                </div>
+
+                <div class="order-details-list">
+                    <div style="font-weight: 700; font-size: 0.8rem; margin-bottom: 0.75rem; color: var(--text-light); text-transform: uppercase;">Chi tiết đơn hàng</div>
+                    ${(order.items || []).map(item => `
+                        <div class="detail-item">
+                            <span>${item.TenSach}</span>
+                            <strong>x${item.SoLuong}</strong>
+                        </div>
+                    `).join('')}
+                    <div class="detail-item" style="margin-top: 0.75rem; padding-top: 0.5rem; border-top: 1px dashed var(--border); font-weight: 700; color: var(--amber); font-size: 1rem;">
+                        <span>Tổng tiền:</span>
+                        <span>${Number(order.TongTien).toLocaleString('vi-VN')}₫</span>
+                    </div>
+                </div>
+
+                ${order.GhiChu ? `
+                    <div class="note-box">
+                        <strong>Ghi chú từ khách:</strong> "${order.GhiChu}"
+                    </div>
+                ` : ''}
+
+                <div class="order-actions">
+                    ${getActionButtons(order)}
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function getStatusClass(status) {
+        if (status === 'Chờ xử lý' || status === 'Chờ lấy hàng') return 'status-pending';
+        if (status === 'Đang giao') return 'status-shipping';
+        if (status === 'Đã giao') return 'status-delivered';
+        return '';
+    }
+
+    function getActionButtons(order) {
+        if (order.TrangThai === 'Chờ lấy hàng') {
+            return `<button class="btn btn-primary" onclick="updateStatus('${order.MaDH}', 'Đang giao')">Xác nhận nhận đơn</button>`;
+        }
+        if (order.TrangThai === 'Đang giao') {
+            return `
+                <a href="tel:${order.SDT}" class="btn btn-outline">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                    Gọi điện
+                </a>
+                <button class="btn btn-primary" onclick="updateStatus('${order.MaDH}', 'Đã giao')">Giao thành công</button>
+            `;
+        }
+        return `<button class="btn btn-outline" disabled style="opacity:0.5; border-color:var(--border); color:var(--text-light)">Đã hoàn thành</button>`;
+    }
+
+    async function updateStatus(orderId, status) {
+        const msg = status === 'Đang giao' ? 'Bạn xác nhận nhận giao đơn này?' : 'Xác nhận khách đã nhận hàng và thanh toán?';
+        if (!confirm(msg)) return;
+
+        try {
+            const res = await fetch(`${API}/api/admin/orders/update-status`, {
+                method: 'POST',
+                headers: {'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json'},
+                body: JSON.stringify({ orderId, status })
+            });
+            const data = await res.json();
+            if (data.success) {
+                showToast('Cập nhật trạng thái thành công! 🎉');
+                loadOrders();
+            } else {
+                showToast(data.message);
+            }
+        } catch (error) {
+            showToast('Lỗi cập nhật');
+        }
+    }
+
+    function showToast(msg) {
+        const toast = document.getElementById('toast');
+        toast.textContent = msg;
+        toast.style.display = 'block';
+        setTimeout(() => toast.style.display = 'none', 3000);
+    }
+
+    function logout() {
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('currentUser');
+        window.location.href = '/login.html';
+    }
+
+    // Auto refresh every 30 seconds
+    setInterval(loadOrders, 30000);
+    loadOrders();
+</script>
+
+</body>
+</html>

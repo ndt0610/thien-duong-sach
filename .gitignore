@@ -1,0 +1,34 @@
+# Local credentials and machine configuration
+.env
+.env.*
+!.env.example
+.mcp.json
+.mcp/
+.gemini/
+.vscode/
+opencode.json
+config/mcporter.json
+/package-lock.json
+
+# Local diagnostics and destructive sample-data utilities
+server/apply_seed_data.js
+server/check_shipper.js
+server/test_db.js
+
+# Generated dependencies and output
+node_modules/
+**/node_modules/
+dist/
+build/
+coverage/
+*.log
+work/
+
+# User uploaded content and QR assets tied to local payment accounts
+ảnh/uploads/*
+ảnh/qr.jpg
+ảnh/thanh toán/qr bank.png
+ảnh/thanh toán/qr momo.png
+
+# Local database dump may contain personal/sample records
+database/local/*.sql
